@@ -7,18 +7,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation indicates that the annotated method is handling a http GET call
+ * This annotation indicates that the annotated method is handling a http HEAD call
  * @author Hannes Dorfmann
  */
 @Target(ElementType.METHOD) @Retention(RetentionPolicy.CLASS) @Documented
-public @interface Patch {
+public @interface Head {
   /**
    * The path / url. can contain path parameters. Example:
    *<p>
    * <code>
-   *   @Put("/car")
-   *   public void updatedCarPartial(PartialCar car){
-   *     // Update the car
+   *   @Head("/car/{id}")
+   *   public void existsCar(@Named String id){
+   *     // check for car id
    *   }
    * </code>
    *</p>

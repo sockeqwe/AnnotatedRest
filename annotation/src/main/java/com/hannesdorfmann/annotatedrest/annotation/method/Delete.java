@@ -16,8 +16,8 @@ public @interface Delete {
    * The path / url. can contain path parameters. Example:
    *<p>
    * <code>
-   *   @Get("/car/{id}")
-   *   public void deleteCar(@Named("id") String id){
+   *   @Delete("/car/{id}")
+   *   public void deleteCar(@Named String id){
    *     // Deletes the car
    *   }
    * </code>

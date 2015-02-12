@@ -1,4 +1,4 @@
-package com.hannesdorfmann.exception;
+package com.hannesdorfmann.annotatedrest.exception;
 
 /**
  * Represents http 404 status code

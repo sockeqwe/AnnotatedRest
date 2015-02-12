@@ -5,8 +5,8 @@ import com.hannesdorfmann.annotatedrest.config.DefaultConfig;
 import com.hannesdorfmann.annotatedrest.router.ApiMethodInvoker;
 import com.hannesdorfmann.annotatedrest.router.Router;
 import com.hannesdorfmann.annotatedrest.serializer.Serializer;
-import com.hannesdorfmann.exception.HttpException;
-import com.hannesdorfmann.exception.NotFoundException;
+import com.hannesdorfmann.annotatedrest.exception.HttpException;
+import com.hannesdorfmann.annotatedrest.exception.NotFoundException;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +21,9 @@ import org.apache.commons.io.output.CountingOutputStream;
  */
 public abstract class AbstractServlet extends HttpServlet {
 
+  /**
+   * The servlet init parameter for the configuration
+   */
   private final static String CONFIG_INIT_PARAM = "com.hannesdorfmann.annotatedrest.config";
 
   /**
@@ -42,6 +45,11 @@ public abstract class AbstractServlet extends HttpServlet {
    * The router for routing http put calls
    */
   protected Router putRouter = new Router();
+
+  /**
+   * Ther router for routing http head calls
+   */
+  protected Router headRouter = new Router();
 
   /**
    * The serializer, used for serializing and deserializing
@@ -165,5 +173,16 @@ public abstract class AbstractServlet extends HttpServlet {
     } catch (Exception e) {
       new ServletException(e);
     }
+  }
+
+  @Override protected void doHead(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+
+    try {
+      dispatchRoute(req, resp, putRouter);
+    } catch (Exception e) {
+      new ServletException(e);
+    }
+
   }
 }

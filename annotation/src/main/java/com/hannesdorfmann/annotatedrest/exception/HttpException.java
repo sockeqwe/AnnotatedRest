@@ -1,4 +1,4 @@
-package com.hannesdorfmann.exception;
+package com.hannesdorfmann.annotatedrest.exception;
 
 /**
  * The basic class for Exception

@@ -70,5 +70,5 @@ public @interface Api {
    * to an http method (like @Get) must be unique
    * @return
    */
-  String servletClassName() default "";
+  String servletClassName() default "com.hannesdorfmann.annotatedrest.AnnotatedServlet";
 }

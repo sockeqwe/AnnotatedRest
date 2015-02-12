@@ -1,4 +1,4 @@
-package com.hannesdorfmann.exception;
+package com.hannesdorfmann.annotatedrest.exception;
 
 /**
  * Http Status Code 400 excpetion

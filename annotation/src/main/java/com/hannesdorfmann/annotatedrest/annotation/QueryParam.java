@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * @Api public class ThingApi {
  * @Get( path = "/thing/{id}}
  * )
- * public Thing getThing(@Named int id, @Query String foo, @Query int limit){
+ * public Thing getThing(@Named int id, @QueryParam String foo, @QueryParam int limit){
  * ...
  * }
  * }
@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * Only String, int, long and double are supported as data type
  */
 @Target(ElementType.PARAMETER) @Retention(RetentionPolicy.CLASS) @Documented
-public @interface Query {
+public @interface QueryParam {
 
   /**
    * The name of the query parameter. This one is optional. If not specified the variable name is used.
