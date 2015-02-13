@@ -40,6 +40,7 @@ public class ValidatorTest {
 
     basePathShouldFail("//");
     basePathShouldFail("/123/");
+    basePathShouldFail("/qwe/{id}/asd");
     basePathShouldFail("/qwe/");
     basePathShouldFail("/asd_123/");
     basePathShouldFail("/ä");
