@@ -1,6 +1,9 @@
-package com.hannesdorfmann.annotatedrest.processor;
+package test;
 
 import com.hannesdorfmann.annotatedrest.annotation.Api;
+import com.hannesdorfmann.annotatedrest.annotation.method.Get;
+import com.hannesdorfmann.annotatedrest.processor.ProcessingException;
+import com.hannesdorfmann.annotatedrest.processor.Validator;
 import java.lang.annotation.Annotation;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +20,7 @@ public class ValidatorTest {
     versionShouldNotFail("123_baqwe");
     versionShouldNotFail("");
 
+    versionShouldFail(null);
     versionShouldFail("v.1");
     versionShouldFail("v 1");
     versionShouldFail("*");
@@ -38,6 +42,7 @@ public class ValidatorTest {
     basePathShouldNotFail("/asd/_/123");
     basePathShouldNotFail("/QWE");
 
+    basePathShouldFail(null);
     basePathShouldFail("//");
     basePathShouldFail("/123/");
     basePathShouldFail("/qwe/{id}/asd");
@@ -48,16 +53,36 @@ public class ValidatorTest {
     basePathShouldFail("/§");
   }
 
-  @Test public void testServletClassName() throws ProcessingException{
+  @Test public void testServletClassName() throws ProcessingException {
 
     classNameShouldNotFail("com.hannesdorfmann.annotatedrest.AnnotatedServlet");
     classNameShouldNotFail("AnnotatedServlet");
     classNameShouldNotFail("com.a123.AnnotatedServlet");
 
-
+    classNameShouldNotFail(null);
     classNameShouldFail("");
     classNameShouldFail(".ClassFor");
     classNameShouldFail("com.123.ClassFor");
+  }
+
+  @Test public void testMethodPath() throws ProcessingException {
+
+
+    methodPathShouldNotFail("/");
+    methodPathShouldNotFail("/foo");
+    methodPathShouldNotFail("/foo/{id}");
+    methodPathShouldNotFail("/foo/{id}/asd");
+    methodPathShouldNotFail("/foo/{id}/asd/{other}");
+    methodPathShouldNotFail("/foo/{id}/_123/{other}/_");
+
+    methodPathShouldFail(null);
+    methodPathShouldFail("//");
+    methodPathShouldFail("foo");
+    methodPathShouldFail("/ä");
+    methodPathShouldFail("/ö");
+    methodPathShouldFail("/!");
+    methodPathShouldFail("/§");
+
 
   }
 
@@ -105,7 +130,6 @@ public class ValidatorTest {
     }
   }
 
-
   private void classNameShouldNotFail(String name) throws ProcessingException {
     Api api = newApiServletClass(name);
     Validator.checkValidServletClassName(null, api);
@@ -120,6 +144,20 @@ public class ValidatorTest {
     } catch (ProcessingException e) {
       Assert.assertTrue(true);
     }
+  }
+
+  private void methodPathShouldFail(String path) {
+    try {
+      Validator.checkValidMethodPath(null, path, Get.class);
+      Assert.fail("Path " + path + " should have failed, but haven't");
+    } catch (ProcessingException e) {
+      Assert.assertTrue(true);
+    }
+  }
+
+  private void methodPathShouldNotFail(String path) throws ProcessingException {
+    Validator.checkValidMethodPath(null, path, Get.class);
+    Assert.assertTrue(true);
   }
 
   private Api newApi(final String version, final String basePath, final String servletClassName) {
@@ -141,4 +179,5 @@ public class ValidatorTest {
       }
     };
   }
+
 }

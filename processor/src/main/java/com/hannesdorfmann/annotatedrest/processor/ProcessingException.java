@@ -12,24 +12,13 @@ public class ProcessingException extends Exception {
 
   String message;
   Element causeElement;
-  Object[] args;
 
   public ProcessingException(Element causeElement, String msg, Object... args) {
-
-    this.message = msg;
+    super(String.format(msg, args));
     this.causeElement = causeElement;
-    this.args = args;
-  }
-
-  @Override public String getMessage() {
-    return message;
   }
 
   public Element getCauseElement() {
     return causeElement;
-  }
-
-  public Object[] getMessageArgs() {
-    return args;
   }
 }

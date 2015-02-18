@@ -95,7 +95,6 @@ import org.apache.commons.lang3.StringUtils;
         Head annotation = annotatedElement.getAnnotation(Head.class);
         processHttpAnnotation(annotatedElement, Head.class, annotation.value());
       }
-
     } catch (ProcessingException e) {
       error(e);
     }
@@ -167,6 +166,6 @@ import org.apache.commons.lang3.StringUtils;
   }
 
   private void error(ProcessingException e) {
-    error(e.getCauseElement(), e.getMessage(), e.getMessageArgs());
+    error(e.getCauseElement(), e.getMessage());
   }
 }

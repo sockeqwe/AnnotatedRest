@@ -19,6 +19,8 @@ public class Validator {
 
   private static Pattern subPathWithVariable = Pattern.compile("\\{\\w+\\}");
 
+  private static Pattern notEmptySubPath = Pattern.compile("(/(\\w+|\\{\\w+\\}))+");
+
   /**
    * Checks if the basePath is valid
    *
@@ -27,6 +29,13 @@ public class Validator {
   public static void checkValidBasePath(Element classElement, Api api) throws ProcessingException {
 
     String basePath = api.basePath();
+
+    if (basePath == null) {
+      throw new ProcessingException(classElement,
+          "basePath is null in @%s . If you don't want to use a basePath use \"\" (empty string)",
+          api.getClass().getSimpleName());
+    }
+
     if (StringUtils.isNotEmpty(basePath)) {
 
       if (basePath.charAt(0) != '/') {
@@ -54,12 +63,21 @@ public class Validator {
    */
   public static void checkValidVersion(Element classElement, Api api) throws ProcessingException {
     String version = api.version();
+
+    if (version == null) {
+      throw new ProcessingException(classElement, "The specified version in @%s is null%s.",
+          api.getClass().getSimpleName(),
+          classElement != null ? " in class " + classElement.toString() : "");
+    }
+
     if (StringUtils.isNotEmpty(version)) {
 
       if (!versionPattern.matcher(version).matches()) {
         throw new ProcessingException(classElement,
-            "The specified version in @%s is not a valid version string. It must match the following regex: %s",
-            api.getClass().getSimpleName(), versionPattern.pattern());
+            "The specified version in @%s is not a valid version string%s. It must match the following regex: %s",
+            api.getClass().getSimpleName(),
+            classElement != null ? " in class " + classElement.toString() : "",
+            versionPattern.pattern());
       }
     }
   }
@@ -71,6 +89,12 @@ public class Validator {
    */
   public static void checkValidServletClassName(Element classElement, Api api)
       throws ProcessingException {
+
+    if (StringUtils.isEmpty(api.servletClassName())) {
+      throw new ProcessingException(classElement,
+          "The servletClassName specified in @%s is empty or null!",
+          api.getClass().getSimpleName());
+    }
 
     if (!servletClassNamePattern.matcher(api.servletClassName()).matches()) {
       throw new ProcessingException(classElement,
@@ -90,6 +114,11 @@ public class Validator {
   public static void checkValidMethodPath(ExecutableElement method, String methodPath,
       Class<? extends Annotation> annotationClass) throws ProcessingException {
 
+    if (methodPath == null) {
+      throw new ProcessingException(method, "The @%s method path can not be null %s",
+          annotationClass.getSimpleName(), method == null ? "" : "in " + method.toString());
+    }
+
     if (StringUtils.isNotEmpty(methodPath)) {
 
       if (methodPath.charAt(0) != '/') {
@@ -97,12 +126,19 @@ public class Validator {
             annotationClass.getSimpleName(), method == null ? "" : "in " + method.toString());
       }
 
+      if (!notEmptySubPath.matcher(methodPath).matches()) {
+        throw new ProcessingException(method,
+            "The @%s method path%s is not valid. It must match the following regex: %s",
+            annotationClass.getSimpleName(), method == null ? "" : " in " + method.toString(),
+            notEmptySubPath.pattern());
+      }
+
       String[] subPaths = methodPath.split("/");
       for (String p : subPaths) {
 
         if (p.length() > 0 && !basePathPattern.matcher(p).matches() && !subPathWithVariable.matcher(
             p).matches()) {
-          // TODO better preciser error message
+          // TODO better / preciser error message
           throw new ProcessingException(method,
               "The @%s method contains a not valid subpath \"%s\" %s ",
               annotationClass.getSimpleName(), p, method == null ? "" : "for " + method.toString());
